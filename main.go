@@ -8,11 +8,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type Hello struct {
-	Name string `json:"name" validate:"required"`
-	Age  int    `json:"age" validate:"required,gte=18"`
-}
-
 type IntString struct {
 	// regexp=^\\d+(\\,\\d+)*$
 	Data string `json:"values" validate:"required"`
@@ -32,30 +27,6 @@ func main() {
 	fmt.Println("starting")
 	app := fiber.New()
 	validate := validator.New()
-
-	app.Post("/hello", func(ctx *fiber.Ctx) error {
-		var visitor Hello
-		if err := ctx.BodyParser(&visitor); err != nil {
-			return ctx.Status(fiber.StatusBadRequest).JSON(ResponseHTTP{
-				Success: false,
-				Message: err.Error(),
-				Data:    nil,
-			})
-		}
-
-		if err := validate.Struct(visitor); err != nil {
-			return ctx.Status(fiber.StatusBadRequest).JSON(ResponseHTTP{
-				Success: false,
-				Message: err.Error(),
-				Data:    nil,
-			})
-		}
-		return ctx.Status(fiber.StatusOK).JSON(ResponseHTTP{
-			Success: true,
-			Message: "hello",
-			Data:    visitor,
-		})
-	})
 
 	app.Post("/count", func(ctx *fiber.Ctx) error {
 		var data string
